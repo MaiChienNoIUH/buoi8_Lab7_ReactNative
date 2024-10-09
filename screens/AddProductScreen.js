@@ -1,14 +1,36 @@
 import React, { useState } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
 export default function AddProductScreen({ navigation }) {
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
+  const [description, setDescription] = useState('');
+  const [image, setImage] = useState('');
+  const [category, setCategory] = useState('');
 
-  const handleAddProduct = () => {
-    const newProduct = { name, price };
-    // Gọi API để thêm sản phẩm (có thể thêm logic API POST tại đây)
-    navigation.goBack();  // Quay lại HomeScreen sau khi thêm sản phẩm
+  const URL_database = 'https://66fc1f44c3a184a84d1627ea.mockapi.io/products';
+
+  const handleAddProduct = async () => {
+    const newProduct = {
+      name,
+      price,
+      description,
+      image,
+      category
+    };
+
+    try {
+      const response = await fetch(URL_database, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newProduct),
+      });
+      const data = await response.json();
+      onGoBack();
+      navigation.goBack(); // Quay lại màn hình trước sau khi thêm thành công
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   return (
@@ -26,8 +48,25 @@ export default function AddProductScreen({ navigation }) {
         keyboardType="numeric"
         style={styles.input}
       />
+      <TextInput
+        placeholder="Description"
+        value={description}
+        onChangeText={setDescription}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Image URL"
+        value={image}
+        onChangeText={setImage}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Category"
+        value={category}
+        onChangeText={setCategory}
+        style={styles.input}
+      />
       <Button title="Add Product" onPress={handleAddProduct} />
-      <Button title="Cancel" onPress={() => navigation.goBack()} />
     </View>
   );
 }

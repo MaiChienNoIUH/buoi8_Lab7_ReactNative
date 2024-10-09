@@ -1,15 +1,37 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
 export default function EditProductScreen({ route, navigation }) {
-  const { product } = route.params;  // Nhận dữ liệu sản phẩm được truyền qua
+  const { product } = route.params;
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price.toString());
+  const [description, setDescription] = useState(product.description);
+  const [image, setImage] = useState(product.image);
+  const [category, setCategory] = useState(product.category);
 
-  const handleEditProduct = () => {
-    const updatedProduct = { ...product, name, price };
-    // Gọi API để cập nhật sản phẩm (có thể thêm logic API PUT tại đây)
-    navigation.goBack();  // Quay lại HomeScreen sau khi chỉnh sửa
+  const handleEditProduct = async () => {
+    const updatedProduct = {
+      name,
+      price,
+      description,
+      image,
+      category
+    };
+
+    try {
+      const response = await fetch(`https://66fc1f44c3a184a84d1627ea.mockapi.io/products/${product.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(updatedProduct),
+      }); 
+      const data = await response.json();
+      // if (onGoBack) {
+      //       onGoBack();
+      //   }
+      navigation.goBack(); // Quay lại màn hình trước sau khi chỉnh sửa thành công
+    } catch (error) {
+      console.error(error.message);
+    }
   };
 
   return (
@@ -27,8 +49,25 @@ export default function EditProductScreen({ route, navigation }) {
         keyboardType="numeric"
         style={styles.input}
       />
+      <TextInput
+        placeholder="Description"
+        value={description}
+        onChangeText={setDescription}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Image URL"
+        value={image}
+        onChangeText={setImage}
+        style={styles.input}
+      />
+      <TextInput
+        placeholder="Category"
+        value={category}
+        onChangeText={setCategory}
+        style={styles.input}
+      />
       <Button title="Save Changes" onPress={handleEditProduct} />
-      <Button title="Cancel" onPress={() => navigation.goBack()} />
     </View>
   );
 }

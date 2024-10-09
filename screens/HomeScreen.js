@@ -8,11 +8,7 @@ export default function HomeScreen({ navigation }) {
   const [error, setError] = useState(null);
   const URL_database = 'https://66fc1f44c3a184a84d1627ea.mockapi.io/products';
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  const fetchData = async () => {
+  const fetchProducts = async () => { 
     try {
       const response = await fetch(URL_database);
       const data = await response.json();
@@ -23,6 +19,14 @@ export default function HomeScreen({ navigation }) {
       setError(error.message);
       setLoading(false);
     }
+  };
+
+    useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const handleRefresh = () => {
+    fetchProducts(); // Tải lại sản phẩm khi cần thiết
   };
 
   const handleDeleteProduct = async (id) => {
@@ -46,10 +50,10 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.productPrice}>Giá: {item.price} USD</Text>
         <Text style={styles.productDescription}>Mô tả: {item.description}</Text>
         <Text style={styles.productCategory}>Loại sp: {item.category}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditProduct', { product: item })}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditProduct', { product: item, onGoBack: handleRefresh} )}>
           <Text style={styles.buttonText}>EDIT</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} onPress={() => handleDeleteProduct(item.id)}>
+        <TouchableOpacity style={styles.button} onPress={() => handleDeleteProduct(item.id)}> 
           <Text style={styles.buttonText}>DELETE</Text>
         </TouchableOpacity>
       </View>
@@ -80,18 +84,19 @@ export default function HomeScreen({ navigation }) {
         <Button title="Floating" onPress={() => setFilteredProducts(products.filter(p => p.category === 'Floating'))} />
       </View>
 
+      <View style={styles.viewBottom}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddProduct', {onGoBack: handleRefresh })}>
+          <Text style={styles.buttonText}>Add Product</Text>
+        </TouchableOpacity>
+      </View>
+
       <FlatList
         data={filteredProducts}
         keyExtractor={item => item.id.toString()}
         renderItem={renderProduct}
-        style={{ flex: 1 }}
+        style={{ flex: 0.3 }}
       />
 
-      <View style={styles.viewBottom}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddProduct')}>
-          <Text style={styles.buttonText}>Add Product</Text>
-        </TouchableOpacity>
-      </View>
     </View>
   );
 }
@@ -115,8 +120,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   viewBottom: {
-    flex: 2.5,
-    alignItems: 'center'
+    alignItems: 'center',
   },
   productContainer: {
     padding: 10,
