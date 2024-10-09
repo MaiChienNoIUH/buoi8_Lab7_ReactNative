@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
-export default function AddProductScreen({ navigation }) {
+export default function AddProductScreen({ route, navigation }) {
+  const { fetchProducts } = route.params; // Nhận hàm từ params
   const [name, setName] = useState('');
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
@@ -26,7 +27,7 @@ export default function AddProductScreen({ navigation }) {
         body: JSON.stringify(newProduct),
       });
       const data = await response.json();
-      onGoBack();
+      fetchProducts(); // Gọi hàm để cập nhật danh sách sản phẩm
       navigation.goBack(); // Quay lại màn hình trước sau khi thêm thành công
     } catch (error) {
       console.error(error.message);

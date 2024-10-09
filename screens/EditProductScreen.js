@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 
 export default function EditProductScreen({ route, navigation }) {
-  const { product } = route.params;
+  const { product, fetchProducts } = route.params;
   const [name, setName] = useState(product.name);
   const [price, setPrice] = useState(product.price.toString());
   const [description, setDescription] = useState(product.description);
@@ -25,9 +25,7 @@ export default function EditProductScreen({ route, navigation }) {
         body: JSON.stringify(updatedProduct),
       }); 
       const data = await response.json();
-      // if (onGoBack) {
-      //       onGoBack();
-      //   }
+      fetchProducts();
       navigation.goBack(); // Quay lại màn hình trước sau khi chỉnh sửa thành công
     } catch (error) {
       console.error(error.message);

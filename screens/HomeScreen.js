@@ -25,9 +25,9 @@ export default function HomeScreen({ navigation }) {
     fetchProducts();
   }, []);
 
-  const handleRefresh = () => {
-    fetchProducts(); // Tải lại sản phẩm khi cần thiết
-  };
+  // const handleRefresh = () => {
+  //   fetchProducts(); // Tải lại sản phẩm khi cần thiết
+  // };
 
   const handleDeleteProduct = async (id) => {
     try {
@@ -50,7 +50,7 @@ export default function HomeScreen({ navigation }) {
         <Text style={styles.productPrice}>Giá: {item.price} USD</Text>
         <Text style={styles.productDescription}>Mô tả: {item.description}</Text>
         <Text style={styles.productCategory}>Loại sp: {item.category}</Text>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditProduct', { product: item, onGoBack: handleRefresh} )}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('EditProduct', { product: item, fetchProducts: fetchProducts} )}>
           <Text style={styles.buttonText}>EDIT</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={() => handleDeleteProduct(item.id)}> 
@@ -85,7 +85,7 @@ export default function HomeScreen({ navigation }) {
       </View>
 
       <View style={styles.viewBottom}>
-        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddProduct', {onGoBack: handleRefresh })}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('AddProduct', {fetchProducts: fetchProducts})}>
           <Text style={styles.buttonText}>Add Product</Text>
         </TouchableOpacity>
       </View>
